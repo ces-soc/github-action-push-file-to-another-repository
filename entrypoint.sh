@@ -4,17 +4,17 @@ set -e  # if a command fails it stops the execution
 set -u  # script fails if trying to access to an undefined variable
 
 echo "[+] Action start"
-SOURCE_BEFORE_DIRECTORY="${1}"
-SOURCE_DIRECTORY="${2}"
-DESTINATION_GITHUB_USERNAME="${3}"
-DESTINATION_REPOSITORY_NAME="${4}"
-GITHUB_SERVER="${5}"
-USER_EMAIL="${6}"
-USER_NAME="${7}"
-DESTINATION_REPOSITORY_USERNAME="${8}"
-TARGET_BRANCH="${9}"
-COMMIT_MESSAGE="${10}"
-TARGET_DIRECTORY="${11}"
+SOURCE_FILEPATH="${1}"
+DESTINATION_GITHUB_USERNAME="${2}"
+DESTINATION_REPOSITORY_NAME="${3}"
+GITHUB_SERVER="${4}"
+USER_EMAIL="${5}"
+USER_NAME="${6}"
+DESTINATION_REPOSITORY_USERNAME="${7}"
+TARGET_BRANCH="${8}"
+COMMIT_MESSAGE="${9}"
+TARGET_DIRECTORY="${10}"
+TARGET_FILENAME="${11}"
 CREATE_TARGET_BRANCH_IF_NEEDED="${12}"
 
 if [ -z "$DESTINATION_REPOSITORY_USERNAME" ]
@@ -94,49 +94,13 @@ git config --global http.version HTTP/1.1
 }
 ls -la "$CLONE_DIR"
 
-TEMP_DIR=$(mktemp -d)
-# This mv has been the easier way to be able to remove files that were there
-# but not anymore. Otherwise we had to remove the files from "$CLONE_DIR",
-# including "." and with the exception of ".git/"
-mv "$CLONE_DIR/.git" "$TEMP_DIR/.git"
-
-# $TARGET_DIRECTORY is '' by default
-ABSOLUTE_TARGET_DIRECTORY="$CLONE_DIR/$TARGET_DIRECTORY/"
-
-echo "[+] Deleting $ABSOLUTE_TARGET_DIRECTORY"
-rm -rf "$ABSOLUTE_TARGET_DIRECTORY"
-
-echo "[+] Creating (now empty) $ABSOLUTE_TARGET_DIRECTORY"
-mkdir -p "$ABSOLUTE_TARGET_DIRECTORY"
-
-echo "[+] Listing Current Directory Location"
-ls -al
-
-echo "[+] Listing root Location"
-ls -al /
-
-mv "$TEMP_DIR/.git" "$CLONE_DIR/.git"
-
-echo "[+] List contents of $SOURCE_DIRECTORY"
-ls "$SOURCE_DIRECTORY"
-
-echo "[+] Checking if local $SOURCE_DIRECTORY exist"
-if [ ! -d "$SOURCE_DIRECTORY" ]
+if [ ! -d "$CLONE_DIR/$TARGET_DIRECTORY" ]
 then
-	echo "ERROR: $SOURCE_DIRECTORY does not exist"
-	echo "This directory needs to exist when push-to-another-repository is executed"
-	echo
-	echo "In the example it is created by ./build.sh: https://github.com/cpina/push-to-another-repository-example/blob/main/.github/workflows/ci.yml#L19"
-	echo
-	echo "If you want to copy a directory that exist in the source repository"
-	echo "to the target repository: you need to clone the source repository"
-	echo "in a previous step in the same build section. For example using"
-	echo "actions/checkout@v2. See: https://github.com/cpina/push-to-another-repository-example/blob/main/.github/workflows/ci.yml#L16"
-	exit 1
+	echo "Creating $CLONE_DIR/$TARGET_DIRECTORY directory."
+	mkdir -p $CLONE_DIR/$TARGET_DIRECTORY
 fi
-
-echo "[+] Copying contents of source repository folder $SOURCE_DIRECTORY to folder $TARGET_DIRECTORY in git repo $DESTINATION_REPOSITORY_NAME"
-cp -ra "$SOURCE_DIRECTORY"/. "$CLONE_DIR/$TARGET_DIRECTORY"
+echo "[+] Copying contents of source repository folder $SOURCE_FILEPATH to folder $TARGET_DIRECTORY with the name $TARGET_FILENAME in git repo $DESTINATION_REPOSITORY_NAME"
+cp -a "$SOURCE_FILEPATH" "$CLONE_DIR/$TARGET_DIRECTORY/$TARGET_FILENAME"
 cd "$CLONE_DIR"
 
 echo "[+] Files that will be pushed"
