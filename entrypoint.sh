@@ -16,6 +16,7 @@ COMMIT_MESSAGE="${9}"
 TARGET_DIRECTORY="${10}"
 TARGET_FILENAME="${11}"
 CREATE_TARGET_BRANCH_IF_NEEDED="${12}"
+IMG_FOLDER="${13}"
 
 if [ -z "$DESTINATION_REPOSITORY_USERNAME" ]
 then
@@ -101,6 +102,10 @@ then
 fi
 echo "[+] Copying contents of source repository folder $SOURCE_FILEPATH to folder $TARGET_DIRECTORY with the name $TARGET_FILENAME in git repo $DESTINATION_REPOSITORY_NAME"
 cp -a "$SOURCE_FILEPATH" "$CLONE_DIR/$TARGET_DIRECTORY/$TARGET_FILENAME"
+if [ "$IMG_FOLDER" != "IGNORE" ]
+then
+	cp -r "$IMG_FOLDER" "$CLONE_DIR/$TARGET_DIRECTORY"
+fi
 cd "$CLONE_DIR"
 
 echo "[+] Files that will be pushed"

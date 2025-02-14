@@ -4,14 +4,14 @@ The purpose of this forked GitHub Action was to allow copying of a single file a
 
 ## Examples
 
-Push the README.md to the dest-repo-name/folder/subfolder with the name of github-action-push-file-to-another-repository.md
+Push the README.md to the dest-repo-name/folder/subfolder with the name of github-action-push-file-to-another-repository.md. It will then copy ./img to dest-repo-name/folder/subfolder/img and copy the contents recursively.
 
 ``` yaml
 file-push:
     runs-on: ubuntu-latest
     steps:
         - uses: actions/checkout@v3
-        - uses: g1t-out/github-action-push-file-to-another-repository@main
+        - uses: ces-soc/github-action-push-file-to-another-repository@main
             env:
                 SSH_DEPLOY_KEY: ${{ secrets.MY_DEPLOY_KEY }}
             with:
@@ -21,6 +21,7 @@ file-push:
                 user-email: 'myemail@mydomain.com'
                 target-directory: '/folder/subfolder'
                 target-filename: ${{ format('{0}.md', github.event.repository.name )}}
+                img-folder: './img'
 
 ```
 

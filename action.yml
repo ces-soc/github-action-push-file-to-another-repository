@@ -54,6 +54,10 @@ inputs:
       [Optional] create target branch if not exist. Defaults to `false`
     default: false
     required: false
+  img-folder:
+    description: "Additional folder to copy to the target folder"
+    required: false
+    default: "IGNORE"
 
 runs:
   using: docker
