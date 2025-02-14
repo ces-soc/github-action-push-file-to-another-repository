@@ -75,6 +75,7 @@ runs:
     - '${{ inputs.target-directory }}'
     - '${{ inputs.target-filename }}'
     - '${{ inputs.create-target-branch-if-needed }}'
+    - '${{ inputs.img-folder }}'
 branding:
   icon: git-commit
   color: green
